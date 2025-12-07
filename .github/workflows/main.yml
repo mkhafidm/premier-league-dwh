@@ -22,9 +22,13 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    - name: Decode GCP credentials
+    - name: Setup GCP credentials 🔑
       run: |
-        echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY_BASE64 }}" | base64 --decode > $GITHUB_WORKSPACE/key.json
+        # Menggunakan 'echo' dengan kutip tunggal ('...') untuk menulis JSON multi-line 
+        # (termasuk karakter newline di private_key) langsung ke file.
+        echo '${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}' > $GITHUB_WORKSPACE/key.json
+        
+        # Menetapkan lokasi file sebagai variabel lingkungan agar Google libraries dapat menemukannya
         echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/key.json" >> $GITHUB_ENV
 
     - name: Run ETL (Extract + Load)
