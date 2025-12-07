@@ -22,14 +22,10 @@ jobs:
       run: |
         pip install -r requirements.txt
 
-    - name: Write GCP credentials to key.json
-      run: echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}" > key.json
-
-    - name: Export environment variables
+    - name: Decode GCP credentials
       run: |
-        echo "GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }}" >> $GITHUB_ENV
-        echo "GCP_BQ_DATASET=${{ secrets.GCP_BQ_DATASET }}" >> $GITHUB_ENV
-        echo "GOOGLE_APPLICATION_CREDENTIALS=key.json" >> $GITHUB_ENV
+        echo "${{ secrets.GCP_SERVICE_ACCOUNT_KEY_BASE64 }}" | base64 --decode > $GITHUB_WORKSPACE/key.json
+        echo "GOOGLE_APPLICATION_CREDENTIALS=$GITHUB_WORKSPACE/key.json" >> $GITHUB_ENV
 
     - name: Run ETL (Extract + Load)
       run: |
